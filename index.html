@@ -1,21 +1,137 @@
-<!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>michibiki｜3年間の運気グラフ</title>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>michibiki｜3年間の運気グラフ</title>
 <style>
-:root{--pink:#d95778;--ink:#55434a;--line:#ead1d4}*{box-sizing:border-box}body{margin:0;background:#fff7f5;color:var(--ink);font-family:"Yu Mincho",serif}.editor{max-width:900px;margin:24px auto;padding:22px;background:#fffaf8;border:1px solid #f0dadd;border-radius:18px;box-shadow:0 5px 24px #8c566018}.brand{text-align:center;color:#b94c6b;font-style:italic;letter-spacing:5px}.title{text-align:center;color:#a83e60;font-size:30px;margin:4px 0}.sub{text-align:center;color:#b77b86;margin:0 0 20px}.panel{border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0;background:#fffdfb}.panel h2{font-size:18px;margin:0 0 12px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;font-size:14px}input,select,textarea{width:100%;padding:10px;border:1px solid #d9bfc3;border-radius:8px;background:white;color:var(--ink);font:inherit;margin-top:5px}.years{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.chart-wrap{overflow-x:auto}.chart{width:100%;min-width:320px;height:auto;display:block}.memo textarea{min-height:105px;resize:vertical}.actions{display:flex;gap:12px;justify-content:center;margin:18px 0}.btn{border:0;border-radius:24px;padding:12px 28px;background:var(--pink);color:white;font:inherit;cursor:pointer}.btn.secondary{background:white;color:#986c74;border:1px solid #d9bfc3}.hint{font-size:12px;color:#987d82;text-align:center}.report{display:none}.report-sheet{width:210mm;min-height:297mm;margin:20px auto;padding:13mm;background:#fffaf8;border:1px solid #e8c6cc;position:relative}.report-sheet:before{content:"";position:absolute;inset:5mm;border:1px solid #efd9dc;pointer-events:none}.report-sheet .title{font-size:28px}.report-meta{text-align:center;margin:10px 0 16px}.report-memo{white-space:pre-wrap;border:1px solid #ead1d4;border-radius:10px;padding:14px;min-height:45px;margin-top:16px}.report-memo:empty{display:none}.foot{text-align:center;color:#b77b86;letter-spacing:4px;margin-top:18px}
-@media(max-width:600px){.editor{margin:10px;padding:14px}.title{font-size:24px}.fields{grid-template-columns:1fr}.years{gap:7px}.years label{font-size:13px}.years select{font-size:12px;padding:8px}}
-@media print{@page{size:A4 portrait;margin:0}.editor{display:none!important}.report{display:block!important}.report-sheet{margin:0;width:210mm;height:297mm;min-height:297mm;border:0;page-break-after:always;break-after:page}.report-sheet:last-child{page-break-after:auto;break-after:auto}body{background:white;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-</style></head><body>
-<div class="editor"><div class="brand">michibiki</div><h1 class="title">3年間の運気グラフ</h1><p class="sub">〜 あなたの流れを見てみましょう 〜</p>
-<section class="panel"><h2>お名前・生年月日（任意）</h2><div class="fields"><label>お名前<input id="name" placeholder="お名前"></label><label>生年月日<input id="birth" type="date"></label></div></section>
-<section class="panel"><h2>3年間の星を選択</h2><div class="years"><label>2026年<select id="y2026"></select></label><label>2027年<select id="y2027"></select></label><label>2028年<select id="y2028"></select></label></div></section>
-<section class="panel"><h2>運気グラフ（プレビュー）</h2><div class="chart-wrap" id="preview"></div><p class="hint">上が高く、下が低い位置です。</p></section>
-<section class="panel memo"><h2>メモ（自由入力）</h2><textarea id="memo" placeholder="天冲殺・出会いあり！など自由に入力してください"></textarea></section>
-<div class="actions"><button class="btn" onclick="makeReport()">鑑定書を作成・印刷</button><button class="btn secondary" onclick="resetForm()">入力をリセット</button></div><p class="hint">「鑑定書を作成・印刷」から、印刷画面でPDFとして保存できます。</p></div>
-<div class="report" id="report"><article class="report-sheet"><div class="brand">michibiki</div><h1 class="title">3年間の運気グラフ</h1><p class="sub">〜 これからの3年間の流れを見てみましょう 〜</p><div class="report-meta" id="meta"></div><div id="finalChart"></div><div class="report-memo" id="finalMemo"></div><div class="foot">michibiki 〜 自分らしい幸せへの道しるべ 〜</div></article></div>
+:root{--pink:#d94f7b;--ink:#59444c;--line:#ead4d8;--cream:#fffaf7}
+*{box-sizing:border-box}
+body{margin:0;background:#f8eeee;color:var(--ink);font-family:"Hiragino Mincho ProN","Yu Mincho",serif}
+.wrap{max-width:900px;margin:18px auto;padding:18px}
+.panel{background:var(--cream);border:1px solid #efd9dc;border-radius:18px;padding:22px;margin-bottom:16px;box-shadow:0 3px 15px #8d5a5a12}
+h1{text-align:center;color:#a83f65;font-size:clamp(25px,5vw,38px);margin:4px 0}
+.brand{text-align:center;letter-spacing:.35em;color:#b66d83;font-style:italic}
+.sub{text-align:center;color:#b7838f;margin:8px 0 22px}
+h2{font-size:19px;margin:0 0 14px;color:#a84c6d}
+.inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;font-size:14px;margin-bottom:6px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #ddc4ca;border-radius:9px;background:#fff;font:inherit;color:var(--ink)}
+.year-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.chart-wrap{width:100%;overflow:hidden}
+canvas{display:block;width:100%;height:auto}
+.memo textarea{min-height:110px;resize:vertical}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+button{border:0;border-radius:999px;padding:13px 28px;background:var(--pink);color:white;font-size:16px;font-family:inherit;cursor:pointer}
+button.secondary{background:#fff;border:1px solid #d9b7c1;color:#986071}
+.note{text-align:center;color:#b68b96;font-size:13px;margin-top:12px}
+@media(max-width:600px){.wrap{padding:9px}.panel{padding:14px}.inputs{grid-template-columns:1fr}.year-grid{gap:6px}.year-grid select{font-size:13px;padding:9px}}
+@media print{body{background:white}.wrap{max-width:none;margin:0;padding:0}.editor,.actions{display:none!important}.panel{box-shadow:none;border:0;margin:0;padding:10mm}.chart-panel{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="panel editor">
+  <div class="brand">michibiki</div>
+  <h1>3年間の運気グラフ</h1>
+  <p class="sub">〜 これからの3年間の流れを見てみましょう 〜</p>
+  <h2>お客様情報（任意）</h2>
+  <div class="inputs">
+    <div><label for="personName">お名前</label><input id="personName" placeholder="お名前"></div>
+    <div><label for="birthDate">生年月日</label><input id="birthDate" type="date"></div>
+  </div>
+  <hr style="border:0;border-top:1px solid #f0dfe2;margin:18px 0">
+  <h2>3年間の星を選択</h2>
+  <div class="year-grid">
+    <div><label for="y2026">2026年</label><select id="y2026"></select></div>
+    <div><label for="y2027">2027年</label><select id="y2027"></select></div>
+    <div><label for="y2028">2028年</label><select id="y2028"></select></div>
+  </div>
+  <p class="note">①が最も高く、⑫が最も低い位置に表示されます。</p>
+</section>
+
+<section class="panel chart-panel" id="certificate">
+  <div class="brand">m i c h i b i k i</div>
+  <h1>3年間の運気グラフ</h1>
+  <p class="sub">〜 これからの3年間の流れを見てみましょう 〜</p>
+  <div id="personLine" style="text-align:center;margin:18px 0 8px;font-size:16px"></div>
+  <div class="chart-wrap"><canvas id="chart" width="1200" height="850"></canvas></div>
+  <div class="memo">
+    <h2 style="margin:10px 0">✿ メモ</h2>
+    <textarea id="memo" placeholder="自由に入力してください（例：天冲殺／出会いあり！）"></textarea>
+  </div>
+  <div class="brand" style="margin-top:22px;letter-spacing:.18em">michibiki ～ 自分らしい幸せへの道しるべ ～</div>
+</section>
+<div class="actions">
+  <button id="saveImage">画像保存</button>
+  <button class="secondary" id="reset">入力をリセット</button>
+</div>
+<p class="note">画像保存を押すと、鑑定書をPNG画像で保存できます。</p>
+</div>
 <script>
-const stars=[['天報星','胎児（母の体内にいる前世の時代）'],['天印星','赤子（誕生してから3歳くらいまで）'],['天貴星','幼児（幼稚園児から小学校低学年）'],['天恍星','少年（小学校高学年から中学時代）'],['天南星','青年（高校から大学時代または29歳まで）'],['天禄星','壮年（30歳から49歳まで）'],['天將星','大将（50歳から60歳の定年前）'],['天堂星','老人（60歳以降、または定年後）'],['天胡星','病人（体力が衰えて病床にある時代）'],['天極星','死人（生命の終局、来世への出発）'],['天庫星','入墓（墓に入り、来世へ旅立つ時代）'],['天馳星','あの世（来世をさまよう時代）']];
-const ids=['y2026','y2027','y2028'];ids.forEach(id=>{const s=document.getElementById(id);stars.forEach((v,i)=>{let o=document.createElement('option');o.value=i+1;o.textContent=`${i+1} ${v[0]}`;s.append(o)});s.addEventListener('change',drawPreview)});
-function values(){return ids.map(id=>+document.getElementById(id).value)}
-function chart(){let vals=values(),W=760,H=540,left=205,right=25,top=22,bottom=62,gw=W-left-right,gh=H-top-bottom;let y=n=>top+(n-1)*gh/11;let x=i=>left+gw*(i+.5)/3;let bands=stars.map((s,i)=>`<rect x="${left}" y="${y(i+1)-gh/22}" width="${gw}" height="${gh/11}" fill="${i%2?'#fff1ec':'#fce7e8'}" opacity=".9"/>`).join('');let labels=`<text x="145" y="${top+8}" text-anchor="end" font-size="19" fill="#55434a">高</text><text x="145" y="${top+gh}" text-anchor="end" font-size="19" fill="#55434a">低</text>`;let grid=[0,1,2].map(i=>`<line x1="${x(i)}" y1="${top}" x2="${x(i)}" y2="${top+gh}" stroke="#d9c7c8" stroke-dasharray="4 4"/><text x="${x(i)}" y="${H-22}" text-anchor="middle" font-size="18" fill="#55434a">${2026+i}年</text>`).join('');let pts=vals.map((v,i)=>`${x(i)},${y(v)}`).join(' ');let dots=vals.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="9" fill="#e64f7b" stroke="white" stroke-width="3"/><text x="${x(i)}" y="${y(v)-16}" text-anchor="middle" font-size="14" fill="#a83e60">${v} ${stars[v-1][0]}</text>`).join('');return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="3年間の運気グラフ">${bands}${grid}${labels}<polyline points="${pts}" fill="none" stroke="#e64f7b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>${dots}</svg>`}
-function drawPreview(){document.getElementById('preview').innerHTML=chart()}function makeReport(){document.getElementById('meta').textContent=[document.getElementById('name').value,document.getElementById('birth').value].filter(Boolean).join('　｜　');document.getElementById('finalChart').innerHTML=chart();document.getElementById('finalMemo').textContent=document.getElementById('memo').value;window.print()}function resetForm(){document.getElementById('name').value='';document.getElementById('birth').value='';ids.forEach(id=>document.getElementById(id).value='1');document.getElementById('memo').value='';drawPreview()}drawPreview();
-</script></body></html>
+const stars=[
+ ["天報星","胎児"],["天印星","赤子"],["天貴星","幼児"],["天恍星","少年"],
+ ["天南星","青年"],["天禄星","壮年"],["天將星","大将"],["天堂星","老人"],
+ ["天胡星","病人"],["天極星","死人"],["天庫星","入墓"],["天馳星","あの世"]
+];
+const ids=["y2026","y2027","y2028"];
+ids.forEach((id,i)=>{
+ const s=document.getElementById(id);
+ stars.forEach((v,n)=>{const o=document.createElement("option");o.value=n+1;o.textContent=`${String(n+1).padStart(2,"0")} ${v[0]}（${v[1]}）`;s.appendChild(o)});
+ s.value=[1,1,5][i];s.addEventListener("change",draw);
+});
+["personName","birthDate","memo"].forEach(id=>document.getElementById(id).addEventListener("input",draw));
+function draw(){
+ const c=document.getElementById("chart"),ctx=c.getContext("2d"),W=c.width,H=c.height;
+ ctx.clearRect(0,0,W,H);
+ const left=250,right=80,top=45,bottom=100,gw=W-left-right,gh=H-top-bottom,row=gh/12;
+ for(let i=0;i<12;i++){ctx.fillStyle=i%2===0?"#fbe7eb":"#fff2ec";ctx.fillRect(left,top+i*row,gw,row)}
+ ctx.textAlign="right";ctx.textBaseline="middle";ctx.font="30px 'Yu Mincho',serif";ctx.fillStyle="#765965";
+ ctx.fillText("高",left-95,top+12);ctx.fillText("低",left-95,top+gh-12);
+ const years=["2026年","2027年","2028年"],vals=ids.map(id=>Number(document.getElementById(id).value));
+ const xs=years.map((_,i)=>left+gw*(i+.5)/3);
+ ctx.strokeStyle="#d9c4ca";ctx.lineWidth=2;ctx.setLineDash([6,7]);
+ xs.forEach(x=>{ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,top+gh);ctx.stroke()});
+ ctx.setLineDash([]);
+ const ys=vals.map(v=>top+(v-.5)*row);
+ ctx.strokeStyle="#df4d7b";ctx.lineWidth=8;ctx.lineJoin="round";ctx.beginPath();xs.forEach((x,i)=>i?ctx.lineTo(x,ys[i]):ctx.moveTo(x,ys[i]));ctx.stroke();
+ vals.forEach((v,i)=>{
+   ctx.beginPath();ctx.arc(xs[i],ys[i],17,0,Math.PI*2);ctx.fillStyle="#df4d7b";ctx.fill();ctx.lineWidth=5;ctx.strokeStyle="#fff";ctx.stroke();
+   ctx.textAlign="center";ctx.fillStyle="#a84c6d";ctx.font="26px 'Yu Mincho',serif";ctx.fillText(stars[v-1][1],xs[i],ys[i]-34);
+   ctx.fillStyle="#59444c";ctx.font="30px 'Yu Mincho',serif";ctx.fillText(years[i],xs[i],top+gh+45);
+ });
+ const name=document.getElementById("personName").value.trim(),birth=document.getElementById("birthDate").value;
+ document.getElementById("personLine").textContent=[name,birth].filter(Boolean).join("　｜　");
+}
+draw();
+document.getElementById("saveImage").addEventListener("click",()=>{
+ const cert=document.getElementById("certificate");
+ const old=document.getElementById("memo");
+ const canvas=document.createElement("canvas"),ctx=canvas.getContext("2d");
+ const scale=2,w=900,h=1200;canvas.width=w*scale;canvas.height=h*scale;
+ ctx.scale(scale,scale);ctx.fillStyle="#fffaf7";ctx.fillRect(0,0,w,h);
+ ctx.strokeStyle="#ead4d8";ctx.lineWidth=2;ctx.strokeRect(20,20,w-40,h-40);
+ ctx.textAlign="center";ctx.fillStyle="#b66d83";ctx.font="italic 20px serif";ctx.fillText("m i c h i b i k i",w/2,62);
+ ctx.fillStyle="#a83f65";ctx.font="bold 34px serif";ctx.fillText("3年間の運気グラフ",w/2,108);
+ ctx.fillStyle="#b7838f";ctx.font="18px serif";ctx.fillText("〜 これからの3年間の流れを見てみましょう 〜",w/2,142);
+ const name=document.getElementById("personLine").textContent;
+ ctx.fillStyle="#59444c";ctx.font="18px serif";ctx.fillText(name,w/2,185);
+ const source=document.getElementById("chart"),chartImg=new Image();
+ chartImg.onload=()=>{
+   ctx.drawImage(chartImg,35,205,830,590);
+   ctx.fillStyle="#a84c6d";ctx.font="22px serif";ctx.textAlign="left";ctx.fillText("✿ メモ",70,850);
+   ctx.strokeStyle="#ead4d8";ctx.lineWidth=1.5;ctx.strokeRect(65,870,770,210);
+   ctx.fillStyle="#59444c";ctx.font="19px serif";
+   const lines=old.value.split(/\r?\n/);lines.slice(0,8).forEach((line,i)=>ctx.fillText(line,85,910+i*28));
+   ctx.textAlign="center";ctx.fillStyle="#b66d83";ctx.font="16px serif";ctx.fillText("michibiki ～ 自分らしい幸せへの道しるべ ～",w/2,1140);
+   const a=document.createElement("a");a.download="3年間の運気グラフ.png";a.href=canvas.toDataURL("image/png");a.click();
+ };
+ chartImg.src=source.toDataURL("image/png");
+});
+document.getElementById("reset").addEventListener("click",()=>{
+ document.getElementById("personName").value="";document.getElementById("birthDate").value="";
+ document.getElementById("memo").value="";ids.forEach((id,i)=>document.getElementById(id).value=[1,1,5][i]);draw();
+});
+</script>
+</body>
+</html>
